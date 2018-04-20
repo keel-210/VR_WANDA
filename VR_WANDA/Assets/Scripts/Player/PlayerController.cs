@@ -63,16 +63,18 @@ public class PlayerController : MonoBehaviour
     void Fall()
     {
         transform.parent = null;
+        rigidbody.rotation = Quaternion.Euler(0,0,0);
         rigidbody.useGravity = true;
     }
     void Walk()
     {
+        rigidbody.useGravity = true;
         float DifPosRight = (RightPosCash - RightDevice.transform.position).magnitude;
         float DifPosLeft = (LeftPosCash - LeftDevice.transform.position).magnitude;
         float AveVeloY = Mathf.Clamp((DifPosRight + DifPosLeft) / (2 * Time.deltaTime), 0, 3);
-        Debug.Log("Walking : " + AveVeloY);
-        Vector3 forward = new Vector3(HMDTransform.forward.x, 0, HMDTransform.forward.z).normalized;
-        rigidbody.velocity = HMDTransform.forward * WalkSpeed * AveVeloY;
+        Vector3 forward = new Vector3(HMDTransform.forward.x, 0, HMDTransform.forward.z);
+        Debug.Log("Walking : " + forward);
+        rigidbody.velocity = forward * WalkSpeed * AveVeloY;
         RightPosCash = RightDevice.transform.position;
         LeftPosCash = LeftDevice.transform.position;
     }

@@ -26,23 +26,19 @@ public class HandController : MonoBehaviour
         {
             IsTriggered = false;
             IsHandGripping = false;
-            animator.SetBool ("Trigger", false);
-            modelrend.material.color = Color.white;
+            GrippingObject = null;
         }
         if (!IsWalking && device.GetPressDown (SteamVR_Controller.ButtonMask.Grip))
         {
-            modelrend.material.color = Color.green;
             IsWalking = true;
         }
         if (IsWalking && device.GetPressUp (SteamVR_Controller.ButtonMask.Grip))
         {
             IsWalking = false;
-            modelrend.material.color = Color.white;
         }
         if (IsTriggered)
         {
             modelrend.material.color = Color.blue;
-            animator.SetBool ("Trigger", true);
         }
     }
 
