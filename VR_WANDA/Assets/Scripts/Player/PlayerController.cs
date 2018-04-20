@@ -11,7 +11,8 @@ public class PlayerController : MonoBehaviour
     HandController RightDevice, LeftDevice;
     [SerializeField]
     float WalkSpeed;
-    Vector3 RightPosCash, LeftPosCash;
+    Vector3 offset, RightPosCash, LeftPosCash,LocalGrippingPos;
+    bool OldRightGrippingState,OldLeftGrippingState;
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -23,6 +24,7 @@ public class PlayerController : MonoBehaviour
         if (RightDevice.IsHandGripping && LeftDevice.IsHandGripping)
         {
             DowbleGrip();
+            Grip();
         }
         else if (RightDevice.IsHandGripping || LeftDevice.IsHandGripping)
         {
@@ -43,22 +45,29 @@ public class PlayerController : MonoBehaviour
                 Walk();
             }
         }
+        OldRightGrippingState = RightDevice.IsHandGripping;
+        OldLeftGrippingState = LeftDevice.IsHandGripping;
+    }
+    void Grip()
+    {
+
+    }
+    void GrippingPointUpdate()
+    {
+        rigidbody.position = RightDevice.GrippingObject.transform.position;
+        rigidbody.position = Vector3.Lerp(rigidbody.position, rigidbody.position - offset, 0.1f);
     }
     void DowbleGrip()
     {
         rigidbody.useGravity = false;
-        transform.parent = RightDevice.GrippingObject.transform;
         Vector3 RightOffset = RightDevice.transform.position - RightDevice.GripPosition;
         Vector3 LeftOffset = LeftDevice.transform.position - LeftDevice.GripPosition;
-        Vector3 AveOffset = (RightOffset + LeftOffset) / 2;
-        rigidbody.position = Vector3.Lerp(rigidbody.position, rigidbody.position - AveOffset, 0.1f);
+        offset = (RightOffset + LeftOffset) / 2;
     }
     void SingleGrip(HandController device)
     {
         rigidbody.useGravity = false;
-        transform.parent = device.GrippingObject.transform;
-        Vector3 offset = device.transform.position - device.GripPosition;
-        rigidbody.position = Vector3.Lerp(rigidbody.position, rigidbody.position - offset, 0.1f);
+        offset = device.transform.position - device.GripPosition;
     }
     void Fall()
     {
@@ -73,7 +82,6 @@ public class PlayerController : MonoBehaviour
         float DifPosLeft = (LeftPosCash - LeftDevice.transform.position).magnitude;
         float AveVeloY = Mathf.Clamp((DifPosRight + DifPosLeft) / (2 * Time.deltaTime), 0, 3);
         Vector3 forward = new Vector3(HMDTransform.forward.x, 0, HMDTransform.forward.z);
-        Debug.Log("Walking : " + forward);
         rigidbody.velocity = forward * WalkSpeed * AveVeloY;
         RightPosCash = RightDevice.transform.position;
         LeftPosCash = LeftDevice.transform.position;
