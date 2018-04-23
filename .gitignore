@@ -37,4 +37,4 @@ Thumbs.db
 *.pyc #python bytecode cache, for some plugins.
 sysinfo.txt #Unity3D Generated File On Crash Reports
 VR_WANDA/Assets/Adam Character Pack/
-VR_WANDA/Libraly/
+VR_WANDA/Library/
