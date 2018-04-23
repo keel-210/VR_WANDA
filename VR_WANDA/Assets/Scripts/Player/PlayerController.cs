@@ -12,10 +12,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float WalkSpeed;
     Vector3 offset, RightPosCash, LeftPosCash, LocalGrippingPos;
+    Collider collider;
     bool OldRightGrippingState, OldLeftGrippingState;
     void Start ()
     {
         rigidbody = GetComponent<Rigidbody> ();
+        collider = GetComponent<Collider>();
         RightPosCash = RightDevice.transform.position;
         LeftPosCash = LeftDevice.transform.position;
     }
@@ -52,13 +54,14 @@ public class PlayerController : MonoBehaviour
     }
     void Grip ()
     {
+        rigidbody.useGravity = false;
+        collider.isTrigger = true;
         rigidbody.position = transform.TransformPoint (LocalGrippingPos);
         rigidbody.position = Vector3.Lerp (rigidbody.position, rigidbody.position - offset, 0.1f);
         LocalGrippingPos = transform.localPosition;
     }
     void DowbleGrip ()
     {
-        rigidbody.useGravity = false;
         transform.parent = RightDevice.GrippingObject.transform;
         Vector3 RightOffset = RightDevice.transform.position - RightDevice.GripPosition;
         Vector3 LeftOffset = LeftDevice.transform.position - LeftDevice.GripPosition;
@@ -66,7 +69,6 @@ public class PlayerController : MonoBehaviour
     }
     void SingleGrip (HandController device)
     {
-        rigidbody.useGravity = false;
         transform.parent = device.GrippingObject.transform;
         offset = device.transform.position - device.GripPosition;
     }
@@ -75,10 +77,12 @@ public class PlayerController : MonoBehaviour
         transform.parent = null;
         rigidbody.rotation = Quaternion.Euler (0, 0, 0);
         rigidbody.useGravity = true;
+        collider.isTrigger = false;
     }
     void Walk ()
     {
         rigidbody.useGravity = true;
+        collider.isTrigger = false;
         float DifPosRight = (RightPosCash - RightDevice.transform.position).magnitude;
         float DifPosLeft = (LeftPosCash - LeftDevice.transform.position).magnitude;
         float AveVeloY = Mathf.Clamp ((DifPosRight + DifPosLeft) / (2 * Time.deltaTime), 0, 3);
