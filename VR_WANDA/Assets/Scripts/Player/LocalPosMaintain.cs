@@ -12,5 +12,6 @@ public class LocalPosMaintain : MonoBehaviour
     void Update()
     {
         transform.localPosition = localPos;
+        Debug.DrawLine(transform.position, transform.position + transform.up * 5, Color.green);
     }
 }

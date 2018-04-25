@@ -5,15 +5,12 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     Rigidbody rigidbody;
-    [SerializeField]
-    Transform HMDTransform;
-    [SerializeField]
-    HandController RightDevice, LeftDevice;
-    [SerializeField]
-    float WalkSpeed;
+    [SerializeField] Transform HMDTransform;
+    [SerializeField] HandController RightDevice, LeftDevice;
+    [SerializeField] float WalkSpeed;
     Vector3 offset, RightPosCash, LeftPosCash, LocalGrippingPos;
     Collider collider;
-    bool OldRightGrippingState, OldLeftGrippingState;
+    bool OldRightGrippingState, OldLeftGrippingState, IsGripping;
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -54,9 +51,15 @@ public class PlayerController : MonoBehaviour
     }
     void Grip()
     {
+        if (!IsGripping)
+        {
+            IsGripping = true;
+            LocalGrippingPos = transform.localPosition;
+        }
         rigidbody.useGravity = false;
         collider.isTrigger = true;
-        transform.localPosition = Vector3.Lerp(transform.localPosition, LocalGrippingPos - offset, 0.1f);
+        transform.localPosition = LocalGrippingPos;
+        transform.localPosition += new Vector3(0.001f,0,0);
         LocalGrippingPos = transform.localPosition;
     }
     void DowbleGrip()
@@ -77,6 +80,7 @@ public class PlayerController : MonoBehaviour
         rigidbody.rotation = Quaternion.Euler(0, 0, 0);
         rigidbody.useGravity = true;
         collider.isTrigger = false;
+        IsGripping = false;
     }
     void Walk()
     {
