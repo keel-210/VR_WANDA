@@ -326,9 +326,12 @@
     <Compile Include="Assets\Adam Character Pack\PostProcessing\PostProcessing\Runtime\Utils\MaterialFactory.cs" />
     <Compile Include="Assets\Adam Character Pack\PostProcessing\PostProcessing\Runtime\Utils\ReflectionUtils.cs" />
     <Compile Include="Assets\Adam Character Pack\PostProcessing\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
+    <Compile Include="Assets\Scripts\BoneDirections.cs" />
+    <Compile Include="Assets\Scripts\GetAllChildren.cs" />
     <Compile Include="Assets\Scripts\Player\HandController.cs" />
     <Compile Include="Assets\Scripts\Player\LocalPosMaintain.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\ShowBoneDirection.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_Teleporter.cs" />
