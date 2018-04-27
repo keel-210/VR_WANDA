@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class BoneDirections : MonoBehaviour
 {
-	//マネ対象のアニメータークラス
-	public Animator targetAnimator;
-
 	//このオブジェクト自身のアニメーター
 	private Animator animator;
 
