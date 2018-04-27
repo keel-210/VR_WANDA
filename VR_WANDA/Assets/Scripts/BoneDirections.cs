@@ -22,20 +22,22 @@ public class BoneDirections : MonoBehaviour
 		animator = GetComponent<Animator> ();
 		InitializeLocalRotations ();
 	}
-	public Vector3 GetPseudX (Transform tra)
+	public bool GetPseuds (Transform tra, out Vector3 pseudX, out Vector3 pseudY, out Vector3 pseudZ)
 	{
-		Vector3 x = Vector3.zero;
-		return x;
-	}
-	public Vector3 GetPseudY (Transform tra)
-	{
-		Vector3 y = Vector3.zero;
-		return y;
-	}
-	public Vector3 GetPseudZ (Transform tra)
-	{
-		Vector3 z = Vector3.zero;
-		return z;
+		pseudX = Vector3.zero;
+		pseudY = Vector3.zero;
+		pseudZ = Vector3.zero;
+		foreach (var bone in targetBones)
+		{
+			if (tra == animator.GetBoneTransform (bone))
+			{
+				pseudX = pseudXaxis[bone];
+				pseudY = pseudYaxis[bone];
+				pseudZ = pseudZaxis[bone];
+				return true;
+			}
+		}
+		return false;
 	}
 	private void CopyRotations (Animator src, Animator dest)
 	{
@@ -107,19 +109,16 @@ public class BoneDirections : MonoBehaviour
 	private static HumanBodyBones[] targetBones = new []
 	{
 		HumanBodyBones.Hips,
-
 			HumanBodyBones.RightUpperLeg,
 			HumanBodyBones.RightLowerLeg,
 			HumanBodyBones.RightFoot,
 			HumanBodyBones.LeftUpperLeg,
 			HumanBodyBones.LeftLowerLeg,
 			HumanBodyBones.LeftFoot,
-
 			HumanBodyBones.Spine,
 			HumanBodyBones.Chest,
 			HumanBodyBones.Neck,
 			HumanBodyBones.Head,
-
 			HumanBodyBones.RightShoulder,
 			HumanBodyBones.RightUpperArm,
 			HumanBodyBones.RightLowerArm,

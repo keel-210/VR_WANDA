@@ -8,48 +8,49 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform HMDTransform;
     [SerializeField] HandController RightDevice, LeftDevice;
     [SerializeField] float WalkSpeed;
+    [SerializeField] BoneDirections boneDirections;
     Vector3 offset, RightPosCash, LeftPosCash, LocalGrippingPos;
     Collider collider;
     bool OldRightGrippingState, OldLeftGrippingState, IsGripping;
-    void Start()
+    void Start ()
     {
-        rigidbody = GetComponent<Rigidbody>();
-        collider = GetComponent<Collider>();
+        rigidbody = GetComponent<Rigidbody> ();
+        collider = GetComponent<Collider> ();
         RightPosCash = RightDevice.transform.position;
         LeftPosCash = LeftDevice.transform.position;
     }
-    void Update()
+    void Update ()
     {
         if (RightDevice.IsHandGripping && LeftDevice.IsHandGripping)
         {
-            DowbleGrip();
-            Grip();
+            DowbleGrip ();
+            Grip ();
         }
         else if (RightDevice.IsHandGripping || LeftDevice.IsHandGripping)
         {
             if (RightDevice.IsHandGripping)
             {
-                SingleGrip(RightDevice);
-                Grip();
+                SingleGrip (RightDevice);
+                Grip ();
             }
             else
             {
-                SingleGrip(LeftDevice);
-                Grip();
+                SingleGrip (LeftDevice);
+                Grip ();
             }
         }
         else
         {
-            Fall();
+            Fall ();
             if (RightDevice.IsWalking && LeftDevice.IsWalking)
             {
-                Walk();
+                Walk ();
             }
         }
         OldRightGrippingState = RightDevice.IsHandGripping;
         OldLeftGrippingState = LeftDevice.IsHandGripping;
     }
-    void Grip()
+    void Grip ()
     {
         if (!IsGripping)
         {
@@ -59,37 +60,39 @@ public class PlayerController : MonoBehaviour
         rigidbody.useGravity = false;
         collider.isTrigger = true;
         transform.localPosition = LocalGrippingPos;
-        transform.localPosition += new Vector3(0.001f,0,0);
+        Vector3 pseudX, pseudY, pseudZ;
+        boneDirections.GetPseuds (transform.parent, out pseudX, out pseudY, out pseudZ);
+        transform.localPosition += offset.x * pseudX + offset.y * pseudY + offset.z * pseudZ;
         LocalGrippingPos = transform.localPosition;
     }
-    void DowbleGrip()
+    void DowbleGrip ()
     {
         transform.parent = RightDevice.GrippingObject.transform;
         Vector3 RightOffset = RightDevice.transform.position - RightDevice.GripPosition;
         Vector3 LeftOffset = LeftDevice.transform.position - LeftDevice.GripPosition;
         offset = (RightOffset + LeftOffset) / 2;
     }
-    void SingleGrip(HandController device)
+    void SingleGrip (HandController device)
     {
         transform.parent = device.GrippingObject.transform;
         offset = device.transform.position - device.GripPosition;
     }
-    void Fall()
+    void Fall ()
     {
         transform.parent = null;
-        rigidbody.rotation = Quaternion.Euler(0, 0, 0);
+        rigidbody.rotation = Quaternion.Euler (0, 0, 0);
         rigidbody.useGravity = true;
         collider.isTrigger = false;
         IsGripping = false;
     }
-    void Walk()
+    void Walk ()
     {
         rigidbody.useGravity = true;
         collider.isTrigger = false;
         float DifPosRight = (RightPosCash - RightDevice.transform.position).magnitude;
         float DifPosLeft = (LeftPosCash - LeftDevice.transform.position).magnitude;
-        float AveVeloY = Mathf.Clamp((DifPosRight + DifPosLeft) / (2 * Time.deltaTime), 0, 3);
-        Vector3 forward = new Vector3(HMDTransform.forward.x, 0, HMDTransform.forward.z);
+        float AveVeloY = Mathf.Clamp ((DifPosRight + DifPosLeft) / (2 * Time.deltaTime), 0, 3);
+        Vector3 forward = new Vector3 (HMDTransform.forward.x, 0, HMDTransform.forward.z);
         rigidbody.velocity = forward * WalkSpeed * AveVeloY;
         RightPosCash = RightDevice.transform.position;
         LeftPosCash = LeftDevice.transform.position;
